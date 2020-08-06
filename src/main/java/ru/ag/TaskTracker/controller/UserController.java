@@ -1,16 +1,20 @@
-package ru.ag.TaskTracker.controller;
+package ru.ag.TimeTracker.controller;
 
+
+import com.fasterxml.jackson.annotation.JsonView;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.ag.TaskTracker.models.User;
-import ru.ag.TaskTracker.service.UserService;
+import ru.ag.TimeTracker.model.User;
+import ru.ag.TimeTracker.model.Views;
+import ru.ag.TimeTracker.service.UserService;
 
 import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
@@ -20,23 +24,35 @@ public class UserController {
         this.userService = userService;
     }
 
-
-    @GetMapping("/{id}")
-    public ResponseEntity findById(@PathVariable Long id) {
-        Optional<User> user = userService.getUser(id);
-        return Objects.isNull(user)
-                ? ResponseEntity.notFound().build()
-                : ResponseEntity.ok(user);
-    }
-
-    @PostMapping("/save")
-    public ResponseEntity save(@RequestBody User user) {
-        return ResponseEntity.ok(userService.saveUser(user));
-    }
-
     @GetMapping
-    public ResponseEntity findAll() {
+    @JsonView(Views.IdDescriptionStatus.class)
+    public ResponseEntity getAll() {
         return ResponseEntity.ok(userService.findAll());
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity findById(@PathVariable Long id) {
+        Optional<User> byId = userService.findById(id);
+        return Objects.isNull(byId)
+                ? ResponseEntity.notFound().build()
+                : ResponseEntity.ok(byId);
+    }
+
+    @PostMapping
+    public ResponseEntity add(@RequestBody User user) {
+        return ResponseEntity.ok(userService.save(user));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity update(@PathVariable("id") User userDB,
+                                 @RequestBody User user) {
+
+        BeanUtils.copyProperties(user, userDB, "id");
+        return ResponseEntity.ok(userService.save(userDB));
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable User user) {
+        userService.delete(user);
+    }
 }

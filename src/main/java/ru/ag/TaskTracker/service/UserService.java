@@ -1,15 +1,36 @@
-package ru.ag.TaskTracker.service;
+package ru.ag.TimeTracker.service;
 
-import ru.ag.TaskTracker.models.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import ru.ag.TimeTracker.model.User;
+import ru.ag.TimeTracker.repository.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface UserService {
+@Service
+public class UserService {
 
-    Optional<User> getUser(Long id);
+    private final UserRepository userRepository;
 
-    User saveUser(User user);
+    @Autowired
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
-    List<User> findAll();
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public List<User> findAll() {
+        return userRepository.findAll();
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
+    }
+
+    public void delete(User user) {
+        userRepository.delete(user);
+    }
 }
