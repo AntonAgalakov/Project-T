@@ -1,13 +1,11 @@
 package ru.ag.TimeTracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "tasks")
@@ -20,19 +18,25 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    //@JsonView(Views.IdDescriptionStatus.class)
+    @JsonView(Views.IdDescriptionStatus.class)
     private Long id;
-    //@JsonView(Views.IdDescriptionStatus.class)
+
+    @JsonView(Views.IdDescriptionStatus.class)
     private String description;
 
+    @JsonView(Views.IdDescriptionStatus.class)
     private String status;
 
-    private LocalDateTime dateStart;
+    @JsonView(Views.FullTask.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    private Date dateStart;
 
-    private LocalDateTime dateEnd;
+    @JsonView(Views.FullTask.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
+    private Date dateEnd;
 
     @ManyToOne
     @JsonIgnore
-    private User userId;
+    private User user;
 
 }

@@ -115,9 +115,8 @@ Task {
 
 ```
 {
-    "description": "test task",
-    "status": "start",
-    "dateStart": "19-03-2020",
-    "dateEnd": null
+    "description": "make a laboratory",
+    "status": "statr",
+    "dateStart": "03-09-2020 12:04"
 }
 ```

@@ -20,11 +20,11 @@ public class TaskService {
     }
 
     public Optional<Task> findById(Long id, User user) {
-        return taskUserRepository.findByIdAndUserId(id, user);
+        return taskUserRepository.findByIdAndUser(id, user);
     }
 
     public List<Task> findAll(User user) {
-        return taskUserRepository.findAllByAndUserId(user);
+        return taskUserRepository.findAllByUser(user);
     }
 
     public Task save(Task task) {

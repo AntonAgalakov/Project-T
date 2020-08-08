@@ -1,11 +1,13 @@
 package ru.ag.TimeTracker.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ag.TimeTracker.model.Task;
 import ru.ag.TimeTracker.model.User;
+import ru.ag.TimeTracker.model.Views;
 import ru.ag.TimeTracker.service.TaskService;
 import ru.ag.TimeTracker.service.UserService;
 
@@ -26,11 +28,13 @@ public class TaskController {
     }
 
     @GetMapping
+    @JsonView(Views.IdDescriptionStatus.class)
     public ResponseEntity getAll(@PathVariable("id") User user) {
         return ResponseEntity.ok(taskService.findAll(user));
     }
 
     @GetMapping("/{task_id}")
+    @JsonView(Views.FullTask.class)
     public ResponseEntity findById(@PathVariable("id") User user, @PathVariable Long task_id) {
         Optional<Task> byId = taskService.findById(task_id, user);
         return Objects.isNull(byId)
@@ -38,9 +42,9 @@ public class TaskController {
                 : ResponseEntity.ok(byId);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity add(@PathVariable("id") User user, @RequestBody Task task) {
-        task.setUserId(user);
+        task.setUser(user);
         user.addTask(task);
         return ResponseEntity.ok(userService.save(user));
     }
@@ -50,13 +54,13 @@ public class TaskController {
                                  @PathVariable("task_id") Task taskDB,
                                  @RequestBody Task task) {
 
-        BeanUtils.copyProperties(task, taskDB, "id", "responsibleUser");
+        BeanUtils.copyProperties(task, taskDB, "id", "user_id");
         return ResponseEntity.ok(taskService.save(taskDB));
     }
 
     @DeleteMapping("/{task_id}")
     public void delete(@PathVariable("id") User user,
-                       @PathVariable Task task){
+                       @PathVariable("task_id") Task task){
         user.removeTask(task);
         taskService.delete(task);
     }

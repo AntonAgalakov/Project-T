@@ -1,6 +1,7 @@
 package ru.ag.TimeTracker.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,10 +20,14 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @JsonView(Views.IdName.class)
     private Long id;
+
+    @JsonView(Views.IdName.class)
     private String name;
 
-    @OneToMany (cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER, mappedBy = "userId")
+    @OneToMany (cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonView(Views.FullInfo.class)
     private Set<Task> tasks;
 
     public void addTask(Task task) {
