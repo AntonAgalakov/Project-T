@@ -1,37 +1,38 @@
 package ru.ag.TimeTracker.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "tasks")
 @Getter
 @Setter
-@ToString(of = {"id", "description"})
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id")
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.IdDescriptionStatus.class)
+    //@JsonView(Views.IdDescriptionStatus.class)
     private Long id;
-    @JsonView(Views.IdDescriptionStatus.class)
+    //@JsonView(Views.IdDescriptionStatus.class)
     private String description;
-    @JsonView(Views.IdDescriptionStatus.class)
+
     private String status;
 
-    @Column(name = "data_start", updatable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") // change format date
-    @JsonView(Views.FullTask.class)
-    private Date dateStart;
+    private LocalDateTime dateStart;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy") // change format date
-    @JsonView(Views.FullTask.class)
-    @Column(name = "data_end")
-    private Date dateEnd;
+    private LocalDateTime dateEnd;
+
+    @ManyToOne
+    @JsonIgnore
+    private User userId;
+
 }

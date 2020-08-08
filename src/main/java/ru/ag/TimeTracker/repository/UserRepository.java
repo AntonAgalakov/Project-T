@@ -5,5 +5,5 @@ import org.springframework.stereotype.Repository;
 import ru.ag.TimeTracker.model.User;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>{
 }
