@@ -28,11 +28,15 @@ public class UserController {
         this.taskService = taskService;
     }
 
+    /* Function of finding all User  (Returns List) */
+
     @GetMapping
     @JsonView(Views.IdName.class)
     public ResponseEntity getAll() {
         return ResponseEntity.ok(userService.findAll());
     }
+
+    /* Function of finding User by Id */
 
     @GetMapping("/{id}")
     @JsonView(Views.FullInfo.class)
@@ -43,10 +47,14 @@ public class UserController {
                 : ResponseEntity.ok(byId);
     }
 
+    /* New user creation function */
+
     @PostMapping
     public ResponseEntity add(@RequestBody User user) {
         return ResponseEntity.ok(userService.save(user));
     }
+
+    /* User update function */
 
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable("id") User userDB,
@@ -56,13 +64,15 @@ public class UserController {
         return ResponseEntity.ok(userService.save(userDB));
     }
 
+    /* Function of deleting User and all its tasks */
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") User user) {
-        List<Task> removeList = taskService.findAll(user.getId());  // find all user tasks
+        List<Task> removeList = taskService.findAll(user.getId());
         for (Task item :removeList) {
-            taskService.delete(item);                          // and delete
+            taskService.delete(item);
         }
-        userService.delete(user);                           // delete the user himself
+        userService.delete(user);
     }
 
 }
