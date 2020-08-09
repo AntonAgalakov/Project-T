@@ -19,12 +19,12 @@ public class TaskService {
         this.taskUserRepository = taskUserRepository;
     }
 
-    public Optional<Task> findById(Long id, User user) {
-        return taskUserRepository.findByIdAndUser(id, user);
+    public Optional<Task> findById(Long taskId, Long userId) {
+        return taskUserRepository.findByIdAndUserId(taskId, userId);
     }
 
-    public List<Task> findAll(User user) {
-        return taskUserRepository.findAllByUser(user);
+    public List<Task> findAll(Long userId) {
+        return taskUserRepository.findAllByUserId(userId);
     }
 
     public Task save(Task task) {

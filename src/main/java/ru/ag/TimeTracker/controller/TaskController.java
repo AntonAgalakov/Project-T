@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.ag.TimeTracker.model.Task;
-import ru.ag.TimeTracker.model.User;
 import ru.ag.TimeTracker.model.Views;
 import ru.ag.TimeTracker.service.TaskService;
 import ru.ag.TimeTracker.service.UserService;
@@ -15,7 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/user/{id}/task")
+@RequestMapping("/user/{userId}/task")
 public class TaskController {
 
     private final TaskService taskService;
@@ -29,39 +28,37 @@ public class TaskController {
 
     @GetMapping
     @JsonView(Views.IdDescriptionStatus.class)
-    public ResponseEntity getAll(@PathVariable("id") User user) {
-        return ResponseEntity.ok(taskService.findAll(user));
+    public ResponseEntity getAll(@PathVariable Long userId) {
+        return ResponseEntity.ok(taskService.findAll(userId));
     }
 
-    @GetMapping("/{task_id}")
+    @GetMapping("/{taskId}")
     @JsonView(Views.FullTask.class)
-    public ResponseEntity findById(@PathVariable("id") User user, @PathVariable Long task_id) {
-        Optional<Task> byId = taskService.findById(task_id, user);
+    public ResponseEntity findById(@PathVariable Long userId, @PathVariable Long taskId) {
+        Optional<Task> byId = taskService.findById(taskId, userId);
         return Objects.isNull(byId)
                 ? ResponseEntity.notFound().build()
                 : ResponseEntity.ok(byId);
     }
 
     @PostMapping
-    public ResponseEntity add(@PathVariable("id") User user, @RequestBody Task task) {
-        task.setUser(user);
-        user.addTask(task);
-        return ResponseEntity.ok(userService.save(user));
+    public ResponseEntity add(@PathVariable Long userId, @RequestBody Task task) {
+        task.setUserId(userId);
+        return ResponseEntity.ok(taskService.save(task));
     }
 
-    @PutMapping("/{task_id}")
-    public ResponseEntity update(@PathVariable("id") User user,
-                                 @PathVariable("task_id") Task taskDB,
+    @PutMapping("/{taskId}")
+    public ResponseEntity update(@PathVariable Long userId,
+                                 @PathVariable("taskId") Task taskDB,
                                  @RequestBody Task task) {
-
-        BeanUtils.copyProperties(task, taskDB, "id", "user_id");
+        task.setUserId(userId);
+        BeanUtils.copyProperties(task, taskDB, "id");
         return ResponseEntity.ok(taskService.save(taskDB));
     }
 
-    @DeleteMapping("/{task_id}")
-    public void delete(@PathVariable("id") User user,
-                       @PathVariable("task_id") Task task){
-        user.removeTask(task);
+    @DeleteMapping("/{taskId}")
+    public void delete(@PathVariable Long userId,
+                       @PathVariable("taskId") Task task){
         taskService.delete(task);
     }
 

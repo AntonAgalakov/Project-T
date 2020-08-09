@@ -13,9 +13,6 @@ import java.util.Set;
 @Table(name = "users")
 @Setter
 @Getter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class User {
 
     @Id
@@ -25,17 +22,5 @@ public class User {
 
     @JsonView(Views.IdName.class)
     private String name;
-
-    @OneToMany (cascade= {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH}, fetch = FetchType.EAGER, mappedBy = "user")
-    @JsonView(Views.FullInfo.class)
-    private Set<Task> tasks;
-
-    public void addTask(Task task) {
-        tasks.add(task);
-    }
-
-    public void removeTask(Task task) {
-        tasks.remove(task);
-    }
 
 }

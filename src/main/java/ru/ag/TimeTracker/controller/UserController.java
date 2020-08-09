@@ -14,7 +14,6 @@ import ru.ag.TimeTracker.service.UserService;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/user")
@@ -59,9 +58,9 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable("id") User user) {
-        List<Task> removeList = taskService.findAll(user);  // find all user tasks
+        List<Task> removeList = taskService.findAll(user.getId());  // find all user tasks
         for (Task item :removeList) {
-            taskService.delete(item);                       // and delete
+            taskService.delete(item);                          // and delete
         }
         userService.delete(user);                           // delete the user himself
     }

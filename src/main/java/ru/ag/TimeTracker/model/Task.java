@@ -11,15 +11,15 @@ import java.util.Date;
 @Table(name = "tasks")
 @Getter
 @Setter
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.PropertyGenerator.class,
-        property = "id")
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @JsonView(Views.IdDescriptionStatus.class)
     private Long id;
+
+    @JsonView(Views.FullTask.class)
+    private Long userId;
 
     @JsonView(Views.IdDescriptionStatus.class)
     private String description;
@@ -34,9 +34,5 @@ public class Task {
     @JsonView(Views.FullTask.class)
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private Date dateEnd;
-
-    @ManyToOne
-    @JsonIgnore
-    private User user;
 
 }
