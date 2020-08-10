@@ -2,7 +2,9 @@ package ru.ag.TimeTracker.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -12,6 +14,8 @@ import java.util.Date;
 @Table(name = "tasks")
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
 
     @Id

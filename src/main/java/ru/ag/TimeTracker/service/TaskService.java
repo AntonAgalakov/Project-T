@@ -27,6 +27,7 @@ public class TaskService {
         return taskRepository.findAllByUserId(userId);
     }
 
+
     public List<Task> findLaborCosts(Long userId, Date dateStart, Date dateEnd) {
         return taskRepository.findAllByUserIdAndDateStartEqualsOrDateStartBeforeAndDateEndEqualsOrDateEndAfter(userId, dateStart, dateStart, dateEnd, dateEnd);
 
@@ -38,5 +39,9 @@ public class TaskService {
 
     public void delete(Task task) {
         taskRepository.delete(task);
+    }
+
+    public boolean existsById(Long id){
+        return taskRepository.existsById(id);
     }
 }

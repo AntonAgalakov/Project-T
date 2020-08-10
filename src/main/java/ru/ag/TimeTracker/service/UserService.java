@@ -26,11 +26,27 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public User findByName(String name) {
+        return userRepository.findByName(name);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
 
     public void delete(User user) {
         userRepository.delete(user);
+    }
+
+    public boolean existsByName(String name) {
+        return  userRepository.existsByName(name);
+    }
+
+    public boolean existsById(Long id) {
+        return userRepository.existsById(id);
+    }
+
+    public void deleteAll() {
+        userRepository.deleteAll();
     }
 }

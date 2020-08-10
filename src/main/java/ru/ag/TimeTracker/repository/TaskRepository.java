@@ -17,4 +17,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                                                                 Date dateEnd, Date dateEnd2);
     Optional<Task> findByIdAndUserId(Long taskId, Long userId);
 
+    boolean existsById(Long id);
+
+
 }

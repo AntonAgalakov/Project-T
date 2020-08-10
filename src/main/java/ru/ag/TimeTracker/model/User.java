@@ -1,18 +1,19 @@
 package ru.ag.TimeTracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -23,4 +24,7 @@ public class User {
     @JsonView(Views.IdName.class)
     private String name;
 
+    public User(String name) {
+        this.name = name;
+    }
 }

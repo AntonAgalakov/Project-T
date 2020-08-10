@@ -6,4 +6,13 @@ import ru.ag.TimeTracker.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long>{
+
+    boolean existsByName(String name);
+
+    boolean existsById(Long id);
+
+    User findByName(String name);
+
+    void deleteAll();
+
 }
