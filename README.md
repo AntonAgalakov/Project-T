@@ -1,5 +1,5 @@
 <p align="right">Обновлено:11 августа 2020 17:46<br>Исправлен bug даты</p>
-[Версия проекта на 10.08.2020](https://github.com/AntonAgalakov/Project-T/tree/fbd6f7b9ef39d03973189e88d3628056827b7fee)
+Версия [проекта][1] на 10.08.2020
 
 
 # Project-T
@@ -185,3 +185,5 @@ Task {
 
 ________________
 \* под ВСЕХ понимаются задачи, которые завершены, т.е. имеют начальную и конечную даты.
+
+[1]: https://github.com/AntonAgalakov/Project-T/tree/fbd6f7b9ef39d03973189e88d3628056827b7fee
