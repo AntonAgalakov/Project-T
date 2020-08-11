@@ -29,8 +29,8 @@ public class TaskService {
 
 
     public List<Task> findLaborCosts(Long userId, Date dateStart, Date dateEnd) {
-        return taskRepository.findAllByUserIdAndDateStartEqualsOrDateStartBeforeAndDateEndEqualsOrDateEndAfter(userId, dateStart, dateStart, dateEnd, dateEnd);
-
+       List<Task> taskList = taskRepository.findAllByUserIdAndDateStartBetweenAndDateEndBetween(userId, dateStart, dateEnd,dateStart, dateEnd);
+       return taskList;
     }
 
     public Task save(Task task) {

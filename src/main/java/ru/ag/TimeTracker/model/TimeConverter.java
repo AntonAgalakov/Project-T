@@ -1,5 +1,6 @@
 package ru.ag.TimeTracker.model;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -7,11 +8,11 @@ import java.util.Date;
 public class TimeConverter {
 
     public Date strToDate(String value) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        //SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy T HH:mm");
+        DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         Date date = null;
         try {
-            date = formatter.parse(value);
-
+            date = format.parse(value);
         } catch (ParseException e) {
             e.printStackTrace();
         }

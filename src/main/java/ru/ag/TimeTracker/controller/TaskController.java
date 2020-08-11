@@ -193,7 +193,7 @@ public class TaskController {
                                      @PathVariable String fromDay,
                                      @PathVariable String toDay) {
         if(!userService.existsById(userId)) {
-            logger.error("User ("+userId+") does not exist");
+            logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
         TimeConverter convert = new TimeConverter();
@@ -207,7 +207,7 @@ public class TaskController {
             TimeTrack timeTrack = new TimeTrack();
             timeTrack.setTaskId(task.getId());
             timeTrack.setDateStart(task.getDateStart());
-            timeTrack.setDateStart(task.getDateEnd());
+            timeTrack.setDateEnd(task.getDateEnd());
             timeTracks.add(timeTrack);
         }
         logger.info("View all time intervals occupied by work during the period [" +fromDay +";" + toDay+ "]");

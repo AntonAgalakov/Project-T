@@ -12,9 +12,10 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     List<Task> findAllByUserId(Long userId);
-
-    List<Task> findAllByUserIdAndDateStartEqualsOrDateStartBeforeAndDateEndEqualsOrDateEndAfter(Long userId, Date dateStart, Date dateStart2,
-                                                                                                Date dateEnd, Date dateEnd2);
+    
+    List<Task> findAllByUserIdAndDateStartBetweenAndDateEndBetween(Long userId,
+                                                                   Date dateStart, Date dateEnd,
+                                                                   Date dateStart2, Date dateEnd2);
     Optional<Task> findByIdAndUserId(Long taskId, Long userId);
 
     boolean existsById(Long id);
