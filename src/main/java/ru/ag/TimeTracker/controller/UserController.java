@@ -72,7 +72,6 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable("id") User userDB,
                                  @RequestBody User user) {
-
         BeanUtils.copyProperties(user, userDB, "id");
         logger.info("User [" + user.getName() +"] updated");
         return ResponseEntity.ok(userService.save(userDB));
@@ -89,7 +88,7 @@ public class UserController {
         for (Task item :removeList) {
             taskService.delete(item);
         }
-        logger.info("User["+ user.getName()+"] deleted");
+        logger.info("User[" + user.getName() + "] deleted");
         userService.delete(user);
     }
 

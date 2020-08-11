@@ -11,6 +11,6 @@ public class TaskNotFoundException extends RuntimeException {
     }
 
     public TaskNotFoundException(Long id) {
-        super("The task ("+ id + ") does not exist");
+        super("The task (" + id + ") does not exist");
     }
 }
