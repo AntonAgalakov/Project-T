@@ -39,7 +39,7 @@ public class TaskController {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
-        return ResponseEntity.ok(taskService.findAll(userId));
+        return ResponseEntity.ok(taskService.findAllByUserId(userId));
     }
 
     /* Search function for the user's task.  */
@@ -267,7 +267,7 @@ public class TaskController {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
-        List<Task> removeList = taskService.findAll(userId);
+        List<Task> removeList = taskService.findAllByUserId(userId);
         if(removeList.size() == 0) {
             logger.error("List of task is null");
             throw new TaskNotFoundException();

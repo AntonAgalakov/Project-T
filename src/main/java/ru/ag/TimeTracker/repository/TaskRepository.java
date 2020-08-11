@@ -11,6 +11,8 @@ import java.util.Optional;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    List<Task> findAllBy();
+
     List<Task> findAllByUserId(Long userId);
     
     List<Task> findAllByUserIdAndDateStartBetweenAndDateEndBetween(Long userId,

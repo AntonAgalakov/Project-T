@@ -84,7 +84,7 @@ public class UserController {
         if(!userService.existsByName(user.getName())){
             logger.error("Error delete user");
         }
-        List<Task> removeList = taskService.findAll(user.getId());
+        List<Task> removeList = taskService.findAllByUserId(user.getId());
         for (Task item :removeList) {
             taskService.delete(item);
         }

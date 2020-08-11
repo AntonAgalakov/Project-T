@@ -23,10 +23,13 @@ public class TaskService {
         return taskRepository.findByIdAndUserId(taskId, userId);
     }
 
-    public List<Task> findAll(Long userId) {
+    public List<Task> findAllByUserId(Long userId) {
         return taskRepository.findAllByUserId(userId);
     }
 
+    public List<Task> findAll() {
+        return taskRepository.findAll();
+    }
 
     public List<Task> findLaborCosts(Long userId, Date dateStart, Date dateEnd) {
        List<Task> taskList = taskRepository.findAllByUserIdAndDateStartBetweenAndDateEndBetween(userId, dateStart, dateEnd,dateStart, dateEnd);
