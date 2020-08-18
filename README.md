@@ -29,7 +29,7 @@
 <div id='id-section0'/>
 
 ##### Запуск
-Склонируйте репозиторий и добавьте (username и password от mysql) в application.properties
+Склонируйте репозиторий и добавьте (username и password от mysql) в application.properties. (В данном проекте используется Lombok, проверьте настроен ли он в вашей среде разработки.)
 
 <div id='id-section1'/>
 
