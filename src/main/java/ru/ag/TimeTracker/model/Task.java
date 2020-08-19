@@ -20,16 +20,24 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @JsonView(Views.IdDescriptionStatus.class)
+    @JsonView(Views.IdTitleAreaStatus.class)
     private Long id;
 
     @JsonView(Views.FullTask.class)
     private Long userId;
 
-    @JsonView(Views.IdDescriptionStatus.class)
+    @JsonView(Views.IdTitleAreaStatus.class)
+    @Column(length = 40)
+    private String title;
+
+    @JsonView(Views.IdTitleAreaStatus.class)
+    @Column(length = 25)
+    private String area;
+
+    @JsonView(Views.FullTask.class)
     private String description;
 
-    @JsonView(Views.IdDescriptionStatus.class)
+    @JsonView(Views.IdTitleAreaStatus.class)
     private String status;
 
     @JsonView(Views.FullTask.class)
@@ -40,4 +48,15 @@ public class Task {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm")
     private Date dateEnd;
 
+    /* For test*/
+    public Task(String description) {
+        this.description = description;
+    }
+
+    public Task(Long taskId, Long userId, String title, String description) {
+        this.id = taskId;
+        this.userId = userId;
+        this.title = title;
+        this.description = description;
+    }
 }

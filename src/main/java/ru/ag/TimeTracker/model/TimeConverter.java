@@ -8,7 +8,6 @@ import java.util.Date;
 public class TimeConverter {
 
     public Date strToDate(String value) {
-        //SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy T HH:mm");
         DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         Date date = null;
         try {

@@ -16,9 +16,9 @@ public final class Views {
 
     /* For model Task */
 
-    public interface IdDescriptionStatus {} /* Only displayed Id, Description and Status */
+    public interface IdTitleAreaStatus {} /* Only displayed Id, Description and Status */
 
-    public interface FullTask extends IdDescriptionStatus {} /* Full info about Task */
+    public interface FullTask extends IdTitleAreaStatus {} /* Full info about Task */
 
     /* For output TimeTrack */
 

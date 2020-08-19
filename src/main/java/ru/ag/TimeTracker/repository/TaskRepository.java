@@ -14,6 +14,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findAllBy();
 
     List<Task> findAllByUserId(Long userId);
+
+    List<Task> findAddByUserIdAndArea(Long userId, String area);
     
     List<Task> findAllByUserIdAndDateStartBetweenAndDateEndBetween(Long userId,
                                                                    Date dateStart, Date dateEnd,
@@ -21,6 +23,8 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndUserId(Long taskId, Long userId);
 
     boolean existsById(Long id);
+
+    boolean existsByUserIdAndArea(Long userId, String area);
 
 
 }

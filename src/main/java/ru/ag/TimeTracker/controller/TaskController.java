@@ -32,14 +32,25 @@ public class TaskController {
 
     /* Search function for all the user's tasks. (returns List) */
 
-    @GetMapping
-    @JsonView(Views.IdDescriptionStatus.class)
-    public ResponseEntity getAll(@PathVariable Long userId) {
+    @GetMapping()
+    @JsonView(Views.IdTitleAreaStatus.class)
+    public ResponseEntity getAllByArea(@PathVariable Long userId, @RequestParam(defaultValue = "all") String area) {
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
-        return ResponseEntity.ok(taskService.findAllByUserId(userId));
+
+        if(!area.equals("all")) {
+            area = area.toLowerCase();
+            if (!taskService.existsByIdAndArea(userId, area)) {
+                logger.error("Area (" + area + ") does not exist");
+                throw new AreaNotFoundException(area);
+            }
+
+            return ResponseEntity.ok(taskService.findAllByUserIdAndArea(userId, area));
+        } else {
+            return ResponseEntity.ok(taskService.findAllByUserId(userId));
+        }
     }
 
     /* Search function for the user's task.  */
@@ -51,13 +62,16 @@ public class TaskController {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         Optional<Task> byId = taskService.findById(taskId, userId);
         if(!byId.isPresent()) {
             logger.error("Task (" + taskId + ") does not found");
             throw new TaskNotFoundException(taskId);
         }
+
         return ResponseEntity.ok(byId);
     }
+
 
     /* Function creating a task without automatic time initialization */
 
@@ -68,12 +82,29 @@ public class TaskController {
             throw new UserNotFoundException(userId);
         }
 
+        if (task.getTitle() == null) {
+            logger.error("In created task does not title");
+            throw new TaskNotTitleException();
+        }
+
         if (task.getDescription() == null) {
             logger.error("In created task does not description");
             throw new TaskNotDescriptionException();
         }
 
+        if (task.getArea() == null) {
+            task.setArea("all");
+        } else {
+            String temp = task.getArea();
+            task.setArea(temp.toLowerCase());
+        }
+
+        if (task.getStatus() == null) {
+            task.setStatus("created task");
+        }
+
         task.setUserId(userId);
+
         logger.info("User's [" + task.getUserId() + "] task created");
         return ResponseEntity.ok(taskService.save(task));
     }
@@ -86,13 +117,28 @@ public class TaskController {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
+        if (task.getTitle() == null) {
+            logger.error("In created task does not title");
+            throw new TaskNotTitleException();
+        }
+
         if(task.getDescription() == null) {
             logger.error("In created task does not description.");
             throw new TaskNotDescriptionException();
         }
+
+        if (task.getArea() == null) {
+            task.setArea("all");
+        } else {
+            String temp = task.getArea();
+            task.setArea(temp.toLowerCase());
+        }
+
         task.setDateStart(new Date());
         task.setUserId(userId);
-        task.setStatus("Start");
+        task.setStatus("start");
+
         logger.info("User's [" + task.getUserId() + "] task created and started");
         return ResponseEntity.ok(taskService.save(task));
     }
@@ -106,22 +152,27 @@ public class TaskController {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         if(taskDB == null) {
             logger.error("Task does not exist.");
             throw new TaskNotFoundException();
         }
+
         if(taskDB.getDateStart() == null) {
             logger.error("Task [" + taskDB.getId() + "] will not finish, because it is not start date!");
             throw new TaskNotStartDateException(taskDB.getId());
         }
-        if(taskDB.getStatus().equals("Finish")) {
+
+        if(taskDB.getStatus().equals("finish")) {
             logger.error("Task [" + taskDB.getId() + "] finished already.");
             throw new TaskAlreadyFinishedException(taskDB.getId());
         }
+
         Task task = new Task();
         BeanUtils.copyProperties(taskDB, task);
         task.setDateEnd(new Date());
-        task.setStatus("Finish");
+        task.setStatus("finish");
+
         logger.info("Task [" + taskDB.getId() + "] finished");
         return ResponseEntity.ok(taskService.save(task));
     }
@@ -132,28 +183,45 @@ public class TaskController {
     public ResponseEntity update(@PathVariable Long userId,
                                  @PathVariable("taskId") Task taskDB,
                                  @RequestBody Task task) {
+
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         if(taskDB == null) {
             logger.error("The updated task does not exist");
             throw new TaskNotFoundException();
         }
+
         task.setUserId(userId);
+
         if(task.getStatus() == null) {
             task.setStatus(taskDB.getStatus());
         }
+
+        if (task.getTitle() == null) {
+            task.setTitle(taskDB.getTitle());
+        }
+
         if(task.getDescription() == null) {
             task.setDescription(taskDB.getDescription());
         }
+
+        if (task.getArea() == null) {
+            task.setArea(taskDB.getArea());
+        } else {
+            String temp = task.getArea();
+            task.setArea(temp.toLowerCase());
+        }
+
         if(task.getDateStart() == null) {
             task.setDateStart(taskDB.getDateStart());
         }
+
         BeanUtils.copyProperties(task, taskDB, "id");
 
-        logger.info("Task ["+task.getUserId()+"] updated");
-
+        logger.info("Task [" + task.getUserId() + "] updated");
         return ResponseEntity.ok(taskService.save(taskDB));
     }
 
@@ -164,10 +232,12 @@ public class TaskController {
     public ResponseEntity works(@PathVariable Long userId,
                                      @PathVariable String fromDay,
                                      @PathVariable String toDay) {
+
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         TimeConverter convert = new TimeConverter();
         List<Task> taskList = taskService.findLaborCosts(userId,
                                                          convert.strToDate(fromDay),
@@ -175,11 +245,13 @@ public class TaskController {
         if(taskList.size() == 0) {
             logger.error("Intervals works. List of task does not exist");
         }
+
         ArrayList<TimeTrack> timeTracks = new ArrayList<>();
         for (Task task : taskList) {
             Long minuts = convert.minuts(task);
             timeTracks.add(new TimeTrack(task.getId(), minuts));
         }
+
         logger.info("View all the user's labor costs for the period [" +fromDay +";" + toDay+ "]");
         return ResponseEntity.ok(timeTracks);
     }
@@ -191,6 +263,7 @@ public class TaskController {
     public ResponseEntity intervalsWorks(@PathVariable Long userId,
                                          @PathVariable String fromDay,
                                          @PathVariable String toDay) {
+
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
@@ -204,6 +277,7 @@ public class TaskController {
             logger.error("Intervals works. List of task does not exist");
             throw new TaskNotFoundException();
         }
+
         ArrayList<TimeTrack> timeTracks = new ArrayList<>();
         for (Task task : taskList) {
             TimeTrack timeTrack = new TimeTrack(task.getId(),
@@ -211,6 +285,7 @@ public class TaskController {
                                                 task.getDateEnd());
             timeTracks.add(timeTrack);
         }
+
         logger.info("View all time intervals occupied by work during the period [" + fromDay + ";" + toDay + "]");
         return ResponseEntity.ok(timeTracks);
     }
@@ -222,23 +297,28 @@ public class TaskController {
     public ResponseEntity workTime(@PathVariable Long userId,
                                    @PathVariable String fromDay,
                                    @PathVariable String toDay) {
+
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         TimeConverter convert = new TimeConverter();
         List<Task> taskList = taskService.findLaborCosts(userId,
                                                          convert.strToDate(fromDay),
                                                          convert.strToDate(toDay));
+
         if(taskList.size() == 0) {
             logger.error("Intervals works. List of task does not exist");
         }
+
         TimeTrack timeTrack = new TimeTrack();
         Long time = 0L;
         for (Task task : taskList) {
             time += convert.minuts(task);
             timeTrack.setAllTime(time);
         }
+
         logger.info("Viewing the amount of labor costs");
         return ResponseEntity.ok(timeTrack);
     }
@@ -246,15 +326,17 @@ public class TaskController {
     /* Delete task function */
 
     @DeleteMapping("/{taskId}")
-    public void delete(@PathVariable Long userId, @PathVariable("taskId") Task task){
+    public void delete(@PathVariable Long userId, @PathVariable("taskId") Task task) {
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         if(task == null) {
             logger.error("Task does not exist");
             throw new TaskNotFoundException();
         }
+
         logger.info("Task [" + task.getId() + "] deleted");
         taskService.delete(task);
     }
@@ -262,20 +344,21 @@ public class TaskController {
     /* Function for deleting all user tasks */
 
     @DeleteMapping
-    public void deleteAll(@PathVariable Long userId){
+    public void deleteAll(@PathVariable Long userId) {
         if(!userService.existsById(userId)) {
             logger.error("User (" + userId + ") does not exist");
             throw new UserNotFoundException(userId);
         }
+
         List<Task> removeList = taskService.findAllByUserId(userId);
         if(removeList.size() == 0) {
             logger.error("List of task is null");
             throw new TaskNotFoundException();
         }
+
         for(Task task : removeList) {
             taskService.delete(task);
         }
         logger.info("User's [" + userId + "] tasks deleted");
     }
-
 }

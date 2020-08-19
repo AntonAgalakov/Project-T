@@ -31,6 +31,10 @@ public class TaskService {
         return taskRepository.findAll();
     }
 
+    public List<Task> findAllByUserIdAndArea(Long userId, String area) {
+        return taskRepository.findAddByUserIdAndArea(userId, area);
+    }
+
     public List<Task> findLaborCosts(Long userId, Date dateStart, Date dateEnd) {
        List<Task> taskList = taskRepository.findAllByUserIdAndDateStartBetweenAndDateEndBetween(userId, dateStart, dateEnd,dateStart, dateEnd);
        return taskList;
@@ -46,5 +50,9 @@ public class TaskService {
 
     public boolean existsById(Long id){
         return taskRepository.existsById(id);
+    }
+
+    public boolean existsByIdAndArea(Long userId, String area){
+        return taskRepository.existsByUserIdAndArea(userId, area);
     }
 }
